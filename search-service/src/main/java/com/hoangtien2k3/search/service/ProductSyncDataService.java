@@ -9,23 +9,20 @@ import com.hoangtien2k3.search.viewmodel.ProductEsDetailVm;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
 public class ProductSyncDataService {
-    private final RestClient restClient;
+    private final RestTemplate restTemplate;
     private final ServiceUrlConfig serviceUrlConfig;
     private final ProductRepository productRepository;
 
     public ProductEsDetailVm getProductEsDetailById(Long id) {
         final URI url = UriComponentsBuilder.fromHttpUrl(
                 serviceUrlConfig.product()).path("/storefront/products-es/{id}").buildAndExpand(id).toUri();
-        return restClient.get()
-                .uri(url)
-                .retrieve()
-                .body(ProductEsDetailVm.class);
+        return restTemplate.getForObject(url, ProductEsDetailVm.class);
     }
 
     public void updateProduct(Long id) {

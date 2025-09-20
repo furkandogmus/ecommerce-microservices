@@ -18,21 +18,18 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+@SuppressWarnings("unchecked")
 class ProductSyncDataServiceTest {
     private static final String PRODUCT_URL = "http://api.hoangtien2k3.local/product";
 
     private ProductRepository productRepository;
 
-    private RestClient restClient;
+    private RestTemplate restTemplate;
 
     private ServiceUrlConfig serviceUrlConfig;
-
-    RestClient.RequestHeadersUriSpec requestHeadersUriSpec;
-
-    RestClient.ResponseSpec responseSpec;
 
     private ProductSyncDataService productSyncDataService;
 
@@ -42,11 +39,9 @@ class ProductSyncDataServiceTest {
     void setUp() {
 
         productRepository = mock(ProductRepository.class);
-        restClient = mock(RestClient.class);
+        restTemplate = mock(RestTemplate.class);
         serviceUrlConfig = mock(ServiceUrlConfig.class);
-        productSyncDataService = new ProductSyncDataService(restClient, serviceUrlConfig, productRepository);
-        requestHeadersUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
-        responseSpec = mock(RestClient.ResponseSpec.class);
+        productSyncDataService = new ProductSyncDataService(restTemplate, serviceUrlConfig, productRepository);
 
     }
 
@@ -56,10 +51,7 @@ class ProductSyncDataServiceTest {
             .path("/storefront/products-es/{id}").buildAndExpand(ID).toUri();
 
         when(serviceUrlConfig.product()).thenReturn(PRODUCT_URL);
-        when(restClient.get()).thenReturn(requestHeadersUriSpec);
-        when(requestHeadersUriSpec.uri(url)).thenReturn(requestHeadersUriSpec);
-        when(requestHeadersUriSpec.retrieve()).thenReturn(responseSpec);
-        when(responseSpec.body(ProductEsDetailVm.class))
+        when(restTemplate.getForObject(url, ProductEsDetailVm.class))
             .thenReturn(getProductThumbnailVms());
     }
 

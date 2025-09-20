@@ -6,19 +6,18 @@ import com.hoangtien2k3.userservice.model.dto.response.TokenValidationResponse;
 import com.hoangtien2k3.userservice.model.dto.response.InformationMessage;
 import com.hoangtien2k3.userservice.model.dto.response.JwtResponseMessage;
 import com.hoangtien2k3.userservice.model.dto.response.ResponseMessage;
-import com.hoangtien2k3.userservice.security.jwt.JwtProvider;
 import com.hoangtien2k3.userservice.security.validate.AuthorityTokenUtil;
-import com.hoangtien2k3.userservice.service.EmailService;
 import com.hoangtien2k3.userservice.service.UserService;
 import com.hoangtien2k3.userservice.security.validate.TokenValidate;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,20 +28,18 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")
-@Api(value = "User Authentication API",
-        description = "APIs for user registration, login, and authentication"
-)
 @RequiredArgsConstructor
+@Tag(name = "UserAuth", description = "Authentication operations for users")
 public class UserAuth {
 
     private final UserService userService;
-    private final JwtProvider jwtProvider;
-    private final EmailService emailService;
 
-    @ApiOperation(value = "Register a new user", notes = "Registers a new user with the provided details.")
+   
+    @Operation(summary = "User registration", description = "Register a new user account")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User created successfully", response = ResponseMessage.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = ResponseMessage.class)
+        @ApiResponse(responseCode = "200", description = "User registered successfully",
+            content = @Content(schema = @Schema(implementation = ResponseMessage.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid registration data")
     })
     @PostMapping({"/signup", "/register"})
     public Mono<ResponseMessage> register(@Valid @RequestBody SignUp signUp) {
@@ -51,10 +48,11 @@ public class UserAuth {
                 .onErrorResume(error -> Mono.just(new ResponseMessage("Error occurred while creating the account.")));
     }
 
-    @ApiOperation(value = "User login", notes = "Logs in a user with the provided credentials.")
+    @Operation(summary = "User login", description = "Authenticate user and return JWT token")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Login successful", response = JwtResponseMessage.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = ResponseEntity.class)
+        @ApiResponse(responseCode = "200", description = "Login successful",
+            content = @Content(schema = @Schema(implementation = JwtResponseMessage.class))),
+        @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
     @PostMapping({"/signin", "/login"})
     public Mono<ResponseEntity<JwtResponseMessage>> login(@Valid @RequestBody Login signInForm) {
@@ -70,10 +68,10 @@ public class UserAuth {
                 });
     }
 
-    @ApiOperation(value = "User logout", notes = "Logs out the authenticated user.")
+    @Operation(summary = "User logout", description = "Logout the authenticated user")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Logged out successfully", response = String.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = ResponseEntity.class)
+        @ApiResponse(responseCode = "200", description = "Logout successful"),
+        @ApiResponse(responseCode = "400", description = "Logout failed")
     })
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated() and hasAuthority('USER')")
@@ -111,10 +109,11 @@ public class UserAuth {
 //                .onErrorResume(error -> Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()));
 //    }
 
-    @ApiOperation(value = "Validate JWT token", notes = "Validates the provided JWT token.")
+   
+    @Operation(summary = "Validate token", description = "Validate the provided JWT token")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Token is valid", response = Boolean.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = TokenValidationResponse.class)
+        @ApiResponse(responseCode = "200", description = "Token is valid"),
+        @ApiResponse(responseCode = "401", description = "Token is invalid")
     })
     @GetMapping({"/validateToken", "/validate-token"})
     public Boolean validateToken(@RequestHeader(name = "Authorization") String authorizationToken) {
@@ -127,10 +126,10 @@ public class UserAuth {
         }
     }
 
-    @ApiOperation(value = "Check user authority", notes = "Checks if the user has the specified authority.")
+    @Operation(summary = "Check user authority", description = "Check if user has the required authority/role")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Role access API", response = Boolean.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = TokenValidationResponse.class)
+        @ApiResponse(responseCode = "200", description = "User has required authority"),
+        @ApiResponse(responseCode = "401", description = "User does not have required authority")
     })
     @GetMapping({"/hasAuthority", "/authorization"})
     public Boolean getAuthority(@RequestHeader(name = "Authorization") String authorizationToken,

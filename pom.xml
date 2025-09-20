@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.1.12</version>
         <relativePath/>
     </parent>
     <groupId>com.hoangtien2k3</groupId>
@@ -23,7 +23,6 @@
         <module>inventory-service</module>
         <module>favourite-service</module>
         <module>search-service</module>
-        <module>product-service</module>
         <module>user-service</module>
         <module>api-gateway</module>
         <module>discovery-service</module>
@@ -34,22 +33,22 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <ecommerce.version>1.0-SNAPSHOT</ecommerce.version>
         <revision>1.0-SNAPSHOT</revision>
 
         <sonar.organization>nashtech-garage</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <springdoc-openapi-starter-webmvc-ui.version>2.0.2</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.1.0</springdoc-openapi-starter-webmvc-ui.version>
         <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
         <org.lombok.version>1.18.30</org.lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <opentelemetry-logback.vesion>1.30.0-alpha</opentelemetry-logback.vesion>
-        <spring-cloud.version>2023.0.3</spring-cloud.version>
-        <springdoc-openapi-starter-webmvc-ui.version>2.0.2</springdoc-openapi-starter-webmvc-ui.version>
+        <spring-cloud.version>2022.0.4</spring-cloud.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.1.0</springdoc-openapi-starter-webmvc-ui.version>
 
         <commons-validator.version>1.7</commons-validator.version>
         <org.elasticsearch.version>8.14.0</org.elasticsearch.version>
@@ -112,11 +111,6 @@
 <!--            <artifactId>resilience4j-spring-boot3</artifactId>-->
 <!--            <version>2.1.0</version>-->
 <!--        </dependency>-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>6.1.11</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>

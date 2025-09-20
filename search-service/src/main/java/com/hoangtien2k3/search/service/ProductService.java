@@ -131,16 +131,17 @@ public class ProductService {
     private Map<String, Map<String, Long>> getAggregations(SearchHits<Product> searchHits) {
         List<org.springframework.data.elasticsearch.client.elc.Aggregation> aggregations = new ArrayList<>();
         if (searchHits.hasAggregations()) {
-            ((List<ElasticsearchAggregation>) searchHits.getAggregations().aggregations()) //NOSONAR
-                    .forEach(elsAgg -> aggregations.add(elsAgg.aggregation()));
+            @SuppressWarnings("unchecked")
+            List<ElasticsearchAggregation> elasticsearchAggregations = (List<ElasticsearchAggregation>) searchHits.getAggregations().aggregations();
+            elasticsearchAggregations.forEach(elsAgg -> aggregations.add(elsAgg.aggregation()));
         }
 
         Map<String, Map<String, Long>> aggregationsMap = new HashMap<>();
         aggregations.forEach(agg -> {
             Map<String, Long> aggregation = new HashMap<>();
             StringTermsAggregate stringTermsAggregate = (StringTermsAggregate) agg.getAggregate()._get();
-            List<StringTermsBucket> stringTermsBuckets
-                    = (List<StringTermsBucket>) stringTermsAggregate.buckets()._get();
+            @SuppressWarnings("unchecked")
+            List<StringTermsBucket> stringTermsBuckets = (List<StringTermsBucket>) stringTermsAggregate.buckets()._get();
             stringTermsBuckets.forEach(bucket -> aggregation.put(bucket.key()._get().toString(), bucket.docCount()));
             aggregationsMap.put(agg.getName(), aggregation);
         });

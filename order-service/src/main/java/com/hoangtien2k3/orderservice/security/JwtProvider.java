@@ -1,6 +1,7 @@
 package com.hoangtien2k3.orderservice.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +23,15 @@ public class JwtProvider {
 
     @Value("${jwt.expiration}")
     private int jwtExpiration;
+    
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
 
     public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -51,19 +58,14 @@ public class JwtProvider {
 
     public Boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(jwtSecret)
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
                     .parseClaimsJws(token);
 
             return true;
-        } catch (SignatureException e) {
-            log.error("Invalid JWT signature -> Message: ", e);
-        } catch (MalformedJwtException e) {
-            log.error("Invalid format Token -> Message: ", e);
-        } catch (ExpiredJwtException e) {
-            log.error("Expired JWT Token -> Message: ", e);
-        } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT Token -> Message: ", e);
+        } catch (JwtException e) {
+            log.error("Invalid JWT token -> Message: ", e);
         } catch (IllegalArgumentException e) {
             log.error("JWT claims string is empty -> Message: ", e);
         }

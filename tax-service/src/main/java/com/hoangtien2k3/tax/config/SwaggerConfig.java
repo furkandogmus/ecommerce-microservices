@@ -1,5 +1,9 @@
 package com.hoangtien2k3.tax.config;
 
+// Temporarily disabled SpringDoc OpenAPI due to version compatibility issues
+// Will be re-enabled with proper version compatibility
+
+/*
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -17,6 +21,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
     flows = @OAuthFlows(authorizationCode = @OAuthFlow(authorizationUrl = "${springdoc.oauthflow.authorization-url}",
         tokenUrl = "${springdoc.oauthflow.token-url}", scopes = {
             @OAuthScope(name = "openid", description = "openid")})))
+*/
 public class SwaggerConfig {
 
 }

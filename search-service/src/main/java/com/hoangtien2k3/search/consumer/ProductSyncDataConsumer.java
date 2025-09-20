@@ -6,9 +6,6 @@ import com.hoangtien2k3.search.constants.Action;
 import com.hoangtien2k3.search.service.ProductSyncDataService;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +13,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProductSyncDataConsumer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumer.class);
 
     private final ProductSyncDataService productSyncDataService;
 

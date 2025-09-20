@@ -19,7 +19,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
-public final class OrderItem extends AbstractMappedEntity implements Serializable {
+public final class OrderItem extends AbstractMappedEntity {
 
     @Serial
     private static final long serialVersionUID = 1L;

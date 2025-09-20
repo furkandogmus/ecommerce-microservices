@@ -43,6 +43,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @SuppressWarnings({"unchecked", "rawtypes"})
     void testCheckOrderExistsByProductAndUserWithStatus_whenNormalCase_returnOrderExistsByProductAndUserGetVm() {
 
         when(serviceUrlConfig.order()).thenReturn(ORDER_URL);

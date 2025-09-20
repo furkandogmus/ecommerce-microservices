@@ -8,10 +8,12 @@ import com.hoangtien2k3.media.viewmodel.MediaPostVm;
 import com.hoangtien2k3.media.viewmodel.MediaVm;
 import com.hoangtien2k3.media.viewmodel.NoFileMediaVm;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
@@ -34,9 +36,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
+@Tag(name = "MediaController", description = "Operations related to media files")
 public class MediaController {
     private final MediaService mediaService;
 
+    @Operation(summary = "Upload media file", description = "Upload a new media file")
     @PostMapping(path = "/medias", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Ok",
@@ -50,6 +54,7 @@ public class MediaController {
         return ResponseEntity.ok().body(noFileMediaVm);
     }
 
+    @Operation(summary = "Delete media file", description = "Delete a media file by ID")
     @DeleteMapping("/medias/{id}")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Deleted",
@@ -62,6 +67,7 @@ public class MediaController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Get media file by ID", description = "Retrieve media file information by ID")
     @GetMapping("/medias/{id}")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Ok",
@@ -74,6 +80,7 @@ public class MediaController {
         return ResponseEntity.ok().body(media);
     }
 
+    @Operation(summary = "Get media files by IDs", description = "Retrieve multiple media files by their IDs")
     @GetMapping("/medias")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Ok",
@@ -86,6 +93,7 @@ public class MediaController {
         return ResponseEntity.ok().body(medias);
     }
 
+    @Operation(summary = "Download media file", description = "Download the actual media file content")
     @Hidden
     @GetMapping("/medias/{id}/file/{fileName}")
     public ResponseEntity<InputStreamResource> getFile(@PathVariable Long id, @PathVariable String fileName) {

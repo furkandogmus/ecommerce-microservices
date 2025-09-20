@@ -2,6 +2,9 @@ package com.hoangtien2k3.promotion.model;
 
 import com.hoangtien2k3.promotion.listener.CustomAuditingEntityListener;
 import java.time.ZonedDateTime;
+
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,8 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 @Getter

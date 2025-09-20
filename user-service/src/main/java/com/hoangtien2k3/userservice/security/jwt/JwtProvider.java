@@ -1,8 +1,8 @@
 package com.hoangtien2k3.userservice.security.jwt;
 
 import com.hoangtien2k3.userservice.security.userprinciple.UserPrinciple;
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtProvider {
@@ -23,6 +24,10 @@ public class JwtProvider {
     private int jwtExpiration;
     @Value("${jwt.refreshExpiration}")
     private int jwtRefreshExpiration;
+    
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
 
     public String createToken(Authentication authentication) {
         UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
@@ -36,7 +41,7 @@ public class JwtProvider {
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + jwtExpiration * 1000L))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -46,14 +51,15 @@ public class JwtProvider {
                 .setSubject(userPrinciple.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + jwtRefreshExpiration * 1000L)) // jwtRefreshExpiration là thời gian hiệu lực của refresh token
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(getSigningKey())
                 .compact();
     }
 
     public String reduceTokenExpiration(String token) {
         // Decode the token to extract its claims
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -63,24 +69,19 @@ public class JwtProvider {
         // Build a new token with the updated expiration time
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(getSigningKey())
                 .compact();
     }
 
     public Boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(jwtSecret)
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (SignatureException e) {
-            logger.error("Invalid JWT signature -> Message: ", e);
-        } catch (MalformedJwtException e) {
-            logger.error("Invalid format Token -> Message: ", e);
-        } catch (ExpiredJwtException e) {
-            logger.error("Expired JWT Token -> Message: ", e);
-        } catch (UnsupportedJwtException e) {
-            logger.error("Unsupported JWT Token -> Message: ", e);
+        } catch (JwtException e) {
+            logger.error("Invalid JWT token -> Message: ", e);
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty -> Message: ", e);
         }
@@ -89,8 +90,9 @@ public class JwtProvider {
 
     public String getUserNameFromToken(String token) {
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(jwtSecret)
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
 

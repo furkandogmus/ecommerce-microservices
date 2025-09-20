@@ -7,7 +7,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 @EnableConfigurationProperties(ServiceUrlConfig.class)
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+        org.springdoc.core.configuration.SpringDocConfiguration.class,
+        org.springdoc.webmvc.core.configuration.SpringDocWebMvcConfiguration.class
+})
 @Configuration
 public class ElasticsearchApplication {
 

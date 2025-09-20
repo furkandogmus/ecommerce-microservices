@@ -16,14 +16,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ProductService extends AbstractCircuitBreakFallbackHandler {
-    private final RestClient restClient;
+    private final RestTemplate restTemplate;
     private final ServiceUrlConfig serviceUrlConfig;
 
     @Retry(name = "restApi")
@@ -37,13 +39,12 @@ public class ProductService extends AbstractCircuitBreakFallbackHandler {
             .build()
             .toUri();
 
-        return restClient.get()
-            .uri(url)
-            .headers(h -> h.setBearerAuth(jwt))
-            .retrieve()
-            .toEntity(new ParameterizedTypeReference<List<ProductVm>>() {
-            })
-            .getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwt);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        
+        return restTemplate.exchange(url, org.springframework.http.HttpMethod.GET, entity, 
+            new ParameterizedTypeReference<List<ProductVm>>() {}).getBody();
     }
 
     @Retry(name = "restApi")
@@ -56,13 +57,12 @@ public class ProductService extends AbstractCircuitBreakFallbackHandler {
             .queryParams(createIdParams(ids))
             .build()
             .toUri();
-        return restClient.get()
-            .uri(url)
-            .headers(h -> h.setBearerAuth(jwt))
-            .retrieve()
-            .toEntity(new ParameterizedTypeReference<List<CategoryGetVm>>() {
-            })
-            .getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwt);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        
+        return restTemplate.exchange(url, org.springframework.http.HttpMethod.GET, entity, 
+            new ParameterizedTypeReference<List<CategoryGetVm>>() {}).getBody();
     }
 
     @Retry(name = "restApi")
@@ -75,13 +75,12 @@ public class ProductService extends AbstractCircuitBreakFallbackHandler {
             .queryParams(createIdParams(ids))
             .build()
             .toUri();
-        return restClient.get()
-            .uri(url)
-            .headers(h -> h.setBearerAuth(jwt))
-            .retrieve()
-            .toEntity(new ParameterizedTypeReference<List<BrandVm>>() {
-            })
-            .getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwt);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        
+        return restTemplate.exchange(url, org.springframework.http.HttpMethod.GET, entity, 
+            new ParameterizedTypeReference<List<BrandVm>>() {}).getBody();
     }
 
     private static MultiValueMap<String, String> createIdParams(List<Long> ids) {

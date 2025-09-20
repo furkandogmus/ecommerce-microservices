@@ -9,8 +9,6 @@ import org.apache.commons.collections4.CollectionUtils;
 
 public class PromotionValidator implements ConstraintValidator<PromotionConstraint, PromotionDto> {
 
-    private boolean isCreate;
-
     @Override
     public void initialize(PromotionConstraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);

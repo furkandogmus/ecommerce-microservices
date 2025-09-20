@@ -1,14 +1,21 @@
 package com.hoangtien2k3.userservice.security.validate;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
 
 @Component
 public class TokenValidate {
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
+    
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    }
 
     public boolean validateToken(String token) {
         if (SECRET_KEY == null || SECRET_KEY.isEmpty())
@@ -19,8 +26,9 @@ public class TokenValidate {
 
         try {
             Claims claims = Jwts
-                    .parser()
-                    .setSigningKey(SECRET_KEY)
+                    .parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
 
@@ -30,7 +38,7 @@ public class TokenValidate {
             throw new IllegalArgumentException("Token has expired.");
         } catch (MalformedJwtException ex) {
             throw new IllegalArgumentException("Invalid token.");
-        } catch (SignatureException ex) {
+        } catch (JwtException ex) {
             throw new IllegalArgumentException("Token validation error.");
         } catch (IllegalArgumentException ex) {
             throw new IllegalArgumentException("Token validation error: " + ex.getMessage());

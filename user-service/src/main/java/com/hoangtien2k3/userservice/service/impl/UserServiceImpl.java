@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,9 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import reactor.util.context.Context;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -172,7 +170,7 @@ public class UserServiceImpl implements UserService {
 
             if (authentication != null && authentication.isAuthenticated()) {
                 // Invalidate the current token by reducing its expiration time
-                String updatedToken = jwtProvider.reduceTokenExpiration(currentToken);
+                jwtProvider.reduceTokenExpiration(currentToken);
             }
 
             SecurityContextHolder.clearContext();
@@ -300,7 +298,7 @@ public class UserServiceImpl implements UserService {
                 .uri(refreshTokenUrl)
                 .header("Refresh-Token", refreshToken)
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new IllegalArgumentException("Refresh token không hợp lệ")))
+                .onStatus(status -> status.is4xxClientError(), clientResponse -> Mono.error(new IllegalArgumentException("Refresh token không hợp lệ")))
                 .bodyToMono(JwtResponseMessage.class)
                 .map(JwtResponseMessage::getAccessToken); // Sử dụng getAccessToken để lấy token từ JwtResponse
     }

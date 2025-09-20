@@ -1,18 +1,7 @@
 package com.hoangtien2k3.userservice.event;
 
-import com.google.gson.Gson;
-//import com.hoangtien2k3.model.ProfileDTO;
-//import com.hoangtien2k3.service.ProfileService;
-//import com.hoangtien2k3.utils.Constants;
-import com.hoangtien2k3.userservice.constant.KafkaConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.kafka.receiver.KafkaReceiver;
-import reactor.kafka.receiver.ReceiverOptions;
-import reactor.kafka.receiver.ReceiverRecord;
-
-import java.util.Collections;
 
 @Service
 @Slf4j

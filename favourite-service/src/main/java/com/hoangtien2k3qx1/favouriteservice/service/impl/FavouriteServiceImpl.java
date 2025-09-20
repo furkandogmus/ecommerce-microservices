@@ -10,7 +10,6 @@ import com.hoangtien2k3qx1.favouriteservice.helper.FavouriteMappingHelper;
 import com.hoangtien2k3qx1.favouriteservice.repository.FavouriteRepository;
 import com.hoangtien2k3qx1.favouriteservice.service.FavouriteService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,13 +24,11 @@ public class FavouriteServiceImpl implements FavouriteService {
 
     private final FavouriteRepository favouriteRepository;
     private final RestTemplate restTemplate;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public FavouriteServiceImpl(FavouriteRepository favouriteRepository, RestTemplate restTemplate, ModelMapper modelMapper) {
+    public FavouriteServiceImpl(FavouriteRepository favouriteRepository, RestTemplate restTemplate) {
         this.favouriteRepository = favouriteRepository;
         this.restTemplate = restTemplate;
-        this.modelMapper = modelMapper;
     }
 
     @Override

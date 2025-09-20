@@ -1,5 +1,6 @@
 package com.hoangtien2k3.promotion.config;
 
+/*
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -28,5 +29,6 @@ import io.swagger.v3.oas.annotations.servers.Server;
                     @OAuthScope(name = "openid", description = "openid")
                 }))
 )
+*/
 public class SwaggerConfig {
 }

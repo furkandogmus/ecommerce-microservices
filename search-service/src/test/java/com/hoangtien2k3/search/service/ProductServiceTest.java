@@ -33,7 +33,7 @@ import org.springframework.data.elasticsearch.core.SearchShardStatistics;
 import org.springframework.data.elasticsearch.core.TotalHitsRelation;
 import org.springframework.data.elasticsearch.core.suggest.response.Suggest;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 class ProductServiceTest {
 
@@ -56,6 +56,7 @@ class ProductServiceTest {
         SearchHits<Product> searchHits =
             getSearchHits();
 
+        @SuppressWarnings("unchecked")
         SearchPage<Product> productPage = mock(SearchPage.class);
         when(productPage.getNumber()).thenReturn(page);
         when(productPage.getTotalElements()).thenReturn(1L);
@@ -93,6 +94,7 @@ class ProductServiceTest {
         SearchHits<Product> searchHits =
             getSearchHits();
 
+        @SuppressWarnings("unchecked")
         SearchPage<Product> productPage = mock(SearchPage.class);
         when(productPage.getNumber()).thenReturn(page);
         when(productPage.getSize()).thenReturn(size);
@@ -121,6 +123,7 @@ class ProductServiceTest {
         SearchHits<Product> searchHits =
             getSearchHits();
 
+        @SuppressWarnings("unchecked")
         SearchPage<Product> productPage = mock(SearchPage.class);
         when(productPage.getNumber()).thenReturn(0);
         when(productPage.getSize()).thenReturn(10);

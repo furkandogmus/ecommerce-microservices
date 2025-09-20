@@ -3,7 +3,6 @@ package com.hoangtien2k3.userservice.service;
 import com.hoangtien2k3.userservice.constant.AppConstant;
 import com.hoangtien2k3.userservice.model.dto.request.EmailDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

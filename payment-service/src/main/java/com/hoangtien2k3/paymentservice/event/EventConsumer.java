@@ -2,14 +2,7 @@ package com.hoangtien2k3.paymentservice.event;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.kafka.receiver.KafkaReceiver;
-import reactor.kafka.receiver.ReceiverOptions;
-import reactor.kafka.receiver.ReceiverRecord;
-
-import java.util.Collections;
-import java.util.function.Consumer;
 
 @Service
 @Slf4j

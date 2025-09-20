@@ -12,13 +12,15 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
 public class LocationService extends AbstractCircuitBreakFallbackHandler {
-    private final RestClient restClient;
+    private final RestTemplate restTemplate;
     private final ServiceUrlConfig serviceUrlConfig;
 
     @Retry(name = "restApi")
@@ -29,12 +31,13 @@ public class LocationService extends AbstractCircuitBreakFallbackHandler {
             .queryParam("stateOrProvinceIds", stateOrProvinceIds).build().toUri();
         final String jwt =
             ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getTokenValue();
-        return restClient.get()
-            .uri(url)
-            .headers(h -> h.setBearerAuth(jwt))
-            .retrieve()
-            .body(new ParameterizedTypeReference<List<StateOrProvinceAndCountryGetNameVm>>() {
-            });
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwt);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        
+        return restTemplate.exchange(url, org.springframework.http.HttpMethod.GET, entity, 
+            new ParameterizedTypeReference<List<StateOrProvinceAndCountryGetNameVm>>() {}).getBody();
     }
 
     protected List<StateOrProvinceAndCountryGetNameVm> handleLocationNameListFallback(Throwable throwable)

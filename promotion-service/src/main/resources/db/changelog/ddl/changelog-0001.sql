@@ -1,9 +1,14 @@
 --liquibase formatted sql
 
---changeset vonhu:issue-promotion-0003
+--changeset vonhu:issue-promotion-0003-v2
+--preconditions onFail:MARK_RAN
+--precondition-sql-check expectedResult:0 select count(*) from information_schema.table_constraints where constraint_name = 'promotion_usage_promotion_id_fkey' and table_schema = current_schema()
+--precondition-sql-check expectedResult:0 select count(*) from information_schema.table_constraints where constraint_name = 'promotion_apply_promotion_id_fkey' and table_schema = current_schema()
 drop table if exists promotion;
 
---changeset vonhu:issue-promotion-0004
+--changeset vonhu:issue-promotion-0004-v2
+--preconditions onFail:MARK_RAN
+--precondition-sql-check expectedResult:0 select count(*) from information_schema.tables where table_name = 'promotion' and table_schema = current_schema()
 create table promotion(
     id bigserial not null,
     name varchar(255) not null,

@@ -1,9 +1,8 @@
 package com.hoangtien2k3.productservice.entity;
 
 import lombok.*;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serial;
-import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @Entity
 @Table(name = "products")
-public final class Product extends AbstractMappedEntity implements Serializable {
+public final class Product extends AbstractMappedEntity {
 
     @Serial
     private static final long serialVersionUID = 1L;

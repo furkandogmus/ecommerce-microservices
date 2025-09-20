@@ -7,8 +7,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 12042003
       MYSQL_DATABASE: my_database
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 12042003
     ports:
       - "3306:3306"
     networks:
@@ -21,6 +19,20 @@ services:
       - ./mongo_data:/data/db
     ports:
       - "27017:27017"
+    networks:
+      - ecommerce-network
+
+  #postgresql
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - ecommerce-network
 
@@ -203,3 +215,4 @@ networks:
 # volumes:
 volumes:
   elasticsearch:
+  postgres_data:

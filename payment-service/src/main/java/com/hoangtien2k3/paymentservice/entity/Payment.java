@@ -3,9 +3,8 @@ package com.hoangtien2k3.paymentservice.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serial;
-import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +13,7 @@ import java.io.Serializable;
 @Builder
 @Entity
 @Table(name = "payments")
-public class Payment extends AbstractMappedEntity implements Serializable {
+public class Payment extends AbstractMappedEntity {
     @Serial
     private static final long serialVersionUID = 1L;
 

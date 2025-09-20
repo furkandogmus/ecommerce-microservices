@@ -9,7 +9,11 @@ import com.hoangtien2k3.userservice.model.dto.request.UserDto;
 import com.hoangtien2k3.userservice.model.dto.response.ResponseMessage;
 import com.hoangtien2k3.userservice.security.jwt.JwtProvider;
 import com.hoangtien2k3.userservice.service.UserService;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +29,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/api/manager")
-@Api(value = "User API", description = "Operations related to users")
+@Tag(name = "User API", description = "Operations related to users")
 public class UserManager {
     private final ModelMapper modelMapper;
 
@@ -42,10 +46,10 @@ public class UserManager {
         this.modelMapper = modelMapper;
     }
 
-    @ApiOperation(value = "Update user information", notes = "Update the user information with the provided details.")
+    @Operation(summary = "Update user information", description = "Update the user information with the provided details.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User updated successfully", response = ResponseMessage.class),
-            @ApiResponse(code = 400, message = "Bad Request", response = ResponseMessage.class)
+            @ApiResponse(responseCode = "200", description = "User updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     @PutMapping("update/{id}")
     @PreAuthorize("isAuthenticated() and hasAuthority('USER')")
@@ -63,27 +67,26 @@ public class UserManager {
                 );
     }
 
-    @ApiOperation(value = "Change user password",
-            notes = "Change the password for the authenticated user.")
-    @ApiResponse(code = 200,
-            message = "Password changed successfully",
-            response = String.class)
+    @Operation(summary = "Change user password",
+            description = "Change the password for the authenticated user.")
+    @ApiResponse(responseCode = "200",
+            description = "Password changed successfully")
     @PutMapping("/change-password")
     @PreAuthorize("isAuthenticated() and hasAuthority('USER')")
     public Mono<String> changePassword(@RequestBody ChangePasswordRequest request) {
         return userService.changePassword(request);
     }
 
-    @ApiOperation(value = "Delete user",
-            notes = "Delete a user with the specified ID.")
+    @Operation(summary = "Delete user",
+            description = "Delete a user with the specified ID.")
     @DeleteMapping("delete/{id}")
     @PreAuthorize("isAuthenticated() and (hasAuthority('USER') or hasAuthority('ADMIN'))")
     public String delete(@PathVariable("id") Long id) {
         return userService.delete(id);
     }
 
-    @ApiOperation(value = "Get user by username",
-            notes = "Retrieve user information based on the provided username.")
+    @Operation(summary = "Get user by username",
+            description = "Retrieve user information based on the provided username.")
     @GetMapping("/user")
     @PreAuthorize("(isAuthenticated() and (hasAuthority('USER') and principal.username == #username) or hasAuthority('ADMIN'))")
     public ResponseEntity<?> getUserByUsername(@RequestParam(value = "username") String username) {
@@ -100,10 +103,10 @@ public class UserManager {
                 );
     }
 
-    @ApiOperation(value = "Get user by ID", notes = "Retrieve user information based on the provided ID.")
+    @Operation(summary = "Get user by ID", description = "Retrieve user information based on the provided ID.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User retrieved successfully", response = UserDto.class),
-            @ApiResponse(code = 404, message = "User not found", response = ResponseEntity.class)
+            @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/user/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER') and principal.id == #id")
@@ -116,8 +119,8 @@ public class UserManager {
                 : new ResponseEntity<>(null, headerGenerator.getHeadersForError(), HttpStatus.NOT_FOUND);
     }
 
-    @ApiOperation(value = "Get a secure user resource",
-            authorizations = { @Authorization(value="JWT") }
+    @Operation(summary = "Get a secure user resource",
+            security = @SecurityRequirement(name = "JWT")
     )
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -130,11 +133,11 @@ public class UserManager {
         return new ResponseEntity<>(usersPage, headerGenerator.getHeadersForSuccessGetMethod(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get user information from token",
-            notes = "Retrieve user information based on the provided JWT token.")
+    @Operation(summary = "Get user information from token",
+            description = "Retrieve user information based on the provided JWT token.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User information retrieved successfully", response = UserDto.class),
-            @ApiResponse(code = 404, message = "User not found", response = ResponseEntity.class)
+            @ApiResponse(responseCode = "200", description = "User information retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/info")
     public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String token) {
